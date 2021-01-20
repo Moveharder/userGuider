@@ -45,9 +45,12 @@ guider.sub({
 })
 
 guider.play();
+
+// you can call guider.destory() to exit guidpage earlier
 ```
 
 # Todo
 ### multiple position
-### use custom cover
-### ...
+### use customize back cover
+### back page function
+### support customize styles
