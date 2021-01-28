@@ -8,8 +8,9 @@ class guideQueue {
         this.step = 0;
         this.playTicker = null;
 
-        const { autoPlay, autoPlay: { interval, loop } } = options;
-        this.autoPlay = autoPlay || false;
+        this.options = this.assignObj({}, options);
+        let { autoPlay, autoPlay: { interval, loop } } = options;
+        this.autoPlay = autoPlay.interval || false;
         this.autoPlayInterval = interval || 0;
         this.autoPlayLoopTimes = loop || -1;
     }
@@ -111,7 +112,7 @@ class guideQueue {
 
     createCover() {
         let cover = document.createElement('div');
-        const sty = {
+        let sty = {
             'z-index': '9999',
             'position': 'fixed',
             'top': '0',
@@ -121,6 +122,9 @@ class guideQueue {
             'background': 'rgba(0,0,0,.1)',
             'color': 'white'
         }
+
+        sty = this.assignObj(sty, this.options.coverStyle);
+        console.log('final cover styles:', sty)
         for (const key in sty) {
             if (Object.hasOwnProperty.call(sty, key)) {
                 const element = sty[key];
@@ -130,8 +134,9 @@ class guideQueue {
         return cover;
     }
 
-    destory() {
+    destory(cb) {
         if (this.autoPlay) {
+            this.coverDom.innerHTML = '';
             console.log('destory looptimes', this.autoPlayLoopTimes)
             this.autoPlayLoopTimes--;
             if (this.autoPlayLoopTimes) {
@@ -139,6 +144,11 @@ class guideQueue {
                 this.play()
                 return
             }
+        }
+
+        const { onFinished } = this.options;
+        if (onFinished && typeof onFinished == 'function') {
+            onFinished()
         }
 
         this.coverDom.parentNode.removeChild(this.coverDom);
@@ -150,5 +160,16 @@ class guideQueue {
         this.autoPlay = false;
         this.autoPlayInterval = 0;
         this.playTicker = null;
+    }
+
+    assignObj(targetObj, injectObj) {
+        let newObj = {}
+        if (targetObj && Object.prototype.toString.call(targetObj) == '[object Object]') {
+            newObj = Object.assign(newObj, targetObj)
+        }
+        if (injectObj && Object.prototype.toString.call(injectObj) == '[object Object]') {
+            newObj = Object.assign(newObj, injectObj)
+        }
+        return newObj;
     }
 }

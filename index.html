@@ -108,7 +108,13 @@
             autoPlay: {
                 interval: 1000, //自动播放间隔
                 allowDisturb: false, //是否允许人为操控
-                loop: 3,//循环次数 0-N 0不循环
+                loop: 2, //循环次数 0-N 0不循环
+            },
+            coverStyle: {
+                'font-size': '20px'
+            },
+            onFinished: ()=>{
+                console.log('新手引导播放完毕')
             }
         });
 
@@ -118,7 +124,7 @@
             guideDom: document.querySelector('.g1'), //prepare the guider element
             backEl: '.back', // if not support this, use guider.back() to handle back move 
             nextEl: '.next', // if not support this, use guider.next() to handle next move 
-            interval: 2000, // if support this, it can replace this.autoPlay.interval
+            interval: 1000, // if support this, it can replace this.autoPlay.interval
         }, {
             targetEl: '.safe_center',
             position: 'left',
