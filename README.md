@@ -7,19 +7,19 @@ Easy | Configurable | Customize
 
 # Methods & Params
 ```
-    interface autoPlayInterface {
+    interface autoPlayProps {
         interval: Number; // auto play interval time (ms)
         loop?: Number; //loop times 0-N 0 means no loop
         allowDisturb?: Boolean, //is allow user disturb auto paly status. if set true, after user click next/back, the autoplay will be closed.
     }
 
-    interface guiderOptions {
-        autoPlay?: autoPlayInterface; // what kind playing status would you like 
+    interface guiderOptionsProps {
+        autoPlay?: autoPlayProps; // what kind playing status would you like 
         coverStyle?: Object; // customize background cover styles
         onFinished?: Function; // on finished callback function
     }
 
-    interface guideContent {
+    interface guideContentProps {
         targetEl: String; // targe element of add a guider (`.el` or`#el` are both ok.)
         position: String; // in which position above the target element
         guideDom: [DOM String]; // prepare the guider element
@@ -27,10 +27,10 @@ Easy | Configurable | Customize
         nextEl?: String; // if not support this, use guider.next() to handle next move 
     }
 
-    let guider = new guiderQuene(guiderOptions); // instantiate
+    let guider = new guiderQuene(guiderOptionsProps); // instantiate
 
-    guider.mutilSub(guideContent); // batch subscription guide content
-    guider.sub(guideContent); // single subscription guide content
+    guider.mutilSub(guideContentProps); // batch subscription guide content
+    guider.sub(guideContentProps); // single subscription guide content
     guider.back(); // play previous
     guider.next(); // play next
     guider.play(); // start playing guide contents
