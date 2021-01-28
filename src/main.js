@@ -1,18 +1,19 @@
 class guideQueue {
     constructor(options = {}) {
         this.queueList = [];
+        this.step = 0;
         this.guiderDom = null;
         this.coverDom = null;
         this.nextBtn = null;
         this.backBtn = null;
-        this.step = 0;
         this.playTicker = null;
 
         this.options = this.assignObj({}, options);
-        let { autoPlay, autoPlay: { interval, loop } } = options;
+        let { autoPlay, autoPlay: { interval, loop, allowDisturb } } = options;
         this.autoPlay = autoPlay.interval || false;
         this.autoPlayInterval = interval || 0;
         this.autoPlayLoopTimes = loop || -1;
+        this.autoPlayDisturb = allowDisturb || false;
     }
 
     init() {
@@ -28,7 +29,8 @@ class guideQueue {
         this.queueList = this.queueList.concat(tasks);
     }
 
-    next() {
+    next(isUserClick = false) {
+        this.disturbAutoPlay(isUserClick);
         if (this.step >= this.queueList.length - 1) {
             console.log('In terminal')
             this.destory();
@@ -39,7 +41,8 @@ class guideQueue {
         this.play();
     }
 
-    back() {
+    back(isUserClick = false) {
+        this.disturbAutoPlay(isUserClick);
         if (this.step <= 0) {
             console.log('no way to back')
             return;
@@ -76,13 +79,13 @@ class guideQueue {
 
         // auto regist nextHandler when support `nextEl`
         this.nextBtn = guideDom.querySelector(nextEl || '.next');
-        if (this.nextBtn) {
-            this.nextBtn.onclick = this.next.bind(this);
+        if (this.nextBtn && (!this.autoPlay || this.autoPlay && this.autoPlayDisturb)) {
+            this.nextBtn.onclick = this.next.bind(this, true);
         }
 
         this.backBtn = guideDom.querySelector(backEl || '.back');
-        if (this.backBtn) {
-            this.backBtn.onclick = this.back.bind(this);
+        if (this.backBtn && (!this.autoPlay || this.autoPlay && this.autoPlayDisturb)) {
+            this.backBtn.onclick = this.back.bind(this, true);
         }
 
         const elRect = el.getBoundingClientRect();
@@ -119,7 +122,7 @@ class guideQueue {
             'right': '0',
             'bottom': '0',
             'left': '0',
-            'background': 'rgba(0,0,0,.1)',
+            'background': 'rgba(0,0,0,.7)',
             'color': 'white'
         }
 
@@ -132,6 +135,14 @@ class guideQueue {
             }
         }
         return cover;
+    }
+
+    disturbAutoPlay(isUserClick = false) {
+        if (this.autoPlay && this.autoPlayDisturb && isUserClick) {
+            this.playTicker = null;
+            this.autoPlay = false;
+            this.autoPlayLoopTimes = 0;
+        }
     }
 
     destory(cb) {

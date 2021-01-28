@@ -48,7 +48,7 @@
         .guider {
             position: absolute;
             width: 200px;
-            background-color: transparent;
+            background-color: coral;
             display: none;
             white-space: nowrap;
             height: 60px;
@@ -107,11 +107,11 @@
         let guider = new guideQueue({
             autoPlay: {
                 interval: 1000, //自动播放间隔
-                allowDisturb: false, //是否允许人为操控
+                allowDisturb: true, //是否允许人为操控
                 loop: 2, //循环次数 0-N 0不循环
             },
             coverStyle: {
-                'font-size': '20px'
+                'font-size': '14px'
             },
             onFinished: ()=>{
                 console.log('新手引导播放完毕')

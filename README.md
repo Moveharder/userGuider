@@ -1,5 +1,6 @@
 # userGuider
-New user guide plugin use in web page.
+New user guide plugin use in web page. Totally DIY your guide content.
+[Online Demo](https://moveharder.github.io/userGuider/)
 
 # Features
 Easy | Configurable | Customize
@@ -9,7 +10,7 @@ Easy | Configurable | Customize
     interface autoPlayInterface {
         interval: Number; // auto play interval time (ms)
         loop?: Number; //loop times 0-N 0 means no loop
-        allowDisturb?: Boolean, //is allow user disturb auto paly status
+        allowDisturb?: Boolean, //is allow user disturb auto paly status. if set true, after user click next/back, the autoplay will be closed.
     }
 
     interface guiderOptions {
