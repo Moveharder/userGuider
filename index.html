@@ -113,7 +113,7 @@
             coverStyle: {
                 'font-size': '14px'
             },
-            onFinished: ()=>{
+            onFinished: () => {
                 console.log('新手引导播放完毕')
             }
         });
@@ -131,6 +131,7 @@
             guideDom: document.querySelector('.g2'),
             nextEl: '.back',
             nextEl: '.next',
+            interval: 3000,
         }];
         guider.mutilSub(tasks); // batch subscription guide content
 
