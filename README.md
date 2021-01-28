@@ -1,6 +1,25 @@
 # userGuider
 New user guide plugin use in web page.
 
+# Methods
+```
+    interface guideContent {
+        targetEl: String; //targe element of add a guider (`.el` or`#el` are both ok.)
+        position: String; //in which position above the target element
+        guideDom: DOM String; //prepare the guider element
+        backEl?: String; // if not support this, use guider.back() to handle back move 
+        nextEl?: String; // if not support this, use guider.next() to handle next move 
+    }
+
+    guider.mutilSub([...]); //batch subscription guide content
+    guider.sub([...]); //single subscription guide content
+    guider.back(); //play previous
+    guider.next(); //play next
+    guider.play(); //start playing guide contents
+    guider.destory(); //destroy guider instance and exit guide page
+
+```
+
 # Usage
 ```
 // your guiders HTML may like this.
@@ -50,7 +69,8 @@ guider.play();
 ```
 
 # Todo
-### multiple position
+### multiple position ✅
 ### use customize back cover
-### back page function
+### back page function ✅
 ### support customize styles
+### support auto play

@@ -1,8 +1,17 @@
 class guideQueue {
-    constructor() {
+    constructor(options = {}) {
         this.queueList = [];
         this.guiderDom = null;
         this.coverDom = null;
+        this.nextBtn = null;
+        this.backBtn = null;
+        this.step = 0;
+        this.playTicker = null;
+
+        const { autoPlay, autoPlay: { interval, loop } } = options;
+        this.autoPlay = autoPlay || false;
+        this.autoPlayInterval = interval || 0;
+        this.autoPlayLoopTimes = loop || -1;
     }
 
     init() {
@@ -14,13 +23,28 @@ class guideQueue {
         this.queueList.push(task);
     }
 
+    mutilSub(tasks) {
+        this.queueList = this.queueList.concat(tasks);
+    }
+
     next() {
-        if (this.queueList.length <= 1) {
-            console.log('went terminal')
+        if (this.step >= this.queueList.length - 1) {
+            console.log('In terminal')
             this.destory();
             return;
         }
-        this.queueList.splice(0, 1);
+        this.step++;
+        this.coverDom.innerHTML = '';
+        this.play();
+    }
+
+    back() {
+        if (this.step <= 0) {
+            console.log('no way to back')
+            return;
+        }
+
+        this.step--;
         this.coverDom.innerHTML = '';
         this.play();
     }
@@ -33,24 +57,31 @@ class guideQueue {
     }
 
     renderGuider() {
+        console.log('step:', this.step)
         let {
             targetEl,
             guideDom,
             position,
-            nextEl
-        } = this.queueList[0];
+            nextEl,
+            backEl,
+            interval
+        } = this.queueList[this.step];
+
         const el = document.querySelector(targetEl);
         if (!el) {
-            console.log('目标元素不存在')
+            console.log("target element isn't exist.")
             return;
         }
 
         // auto regist nextHandler when support `nextEl`
-        const nextBtn = guideDom.querySelector(nextEl || '.next');
-        if (nextBtn) {
-            nextBtn.addEventListener('click', () => {
-                this.next()
-            }, true)
+        this.nextBtn = guideDom.querySelector(nextEl || '.next');
+        if (this.nextBtn) {
+            this.nextBtn.onclick = this.next.bind(this);
+        }
+
+        this.backBtn = guideDom.querySelector(backEl || '.back');
+        if (this.backBtn) {
+            this.backBtn.onclick = this.back.bind(this);
         }
 
         const elRect = el.getBoundingClientRect();
@@ -69,6 +100,13 @@ class guideQueue {
 
         guideDom.style.display = 'block';
         this.coverDom.appendChild(guideDom);
+
+        if (this.autoPlay) {
+            let delay = interval || this.autoPlayInterval;
+            this.playTicker = setTimeout(() => {
+                this.next()
+            }, delay);
+        }
     }
 
     createCover() {
@@ -80,21 +118,37 @@ class guideQueue {
             'right': '0',
             'bottom': '0',
             'left': '0',
-            'background': 'rgba(0,0,0,.7)',
+            'background': 'rgba(0,0,0,.1)',
             'color': 'white'
         }
         for (const key in sty) {
             if (Object.hasOwnProperty.call(sty, key)) {
                 const element = sty[key];
-                cover.style[key] = element
+                cover.style[key] = element;
             }
         }
         return cover;
     }
 
     destory() {
+        if (this.autoPlay) {
+            console.log('destory looptimes', this.autoPlayLoopTimes)
+            this.autoPlayLoopTimes--;
+            if (this.autoPlayLoopTimes) {
+                this.step = 0;
+                this.play()
+                return
+            }
+        }
+
         this.coverDom.parentNode.removeChild(this.coverDom);
         this.coverDom = null;
         this.queueList = [];
+        this.nextBtn = null;
+        this.backBtn = null;
+        this.step = 0;
+        this.autoPlay = false;
+        this.autoPlayInterval = 0;
+        this.playTicker = null;
     }
 }
